@@ -1,0 +1,126 @@
+HTML:
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic Tac Toe</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Tic Tac Toe</h1>
+  <div class="game-board">
+    <div class="row">
+      <div class="cell" id="cell-0"></div>
+      <div class="cell" id="cell-1"></div>
+      <div class="cell" id="cell-2"></div>
+    </div>
+    <div class="row">
+      <div class="cell" id="cell-3"></div>
+      <div class="cell" id="cell-4"></div>
+      <div class="cell" id="cell-5"></div>
+    </div>
+    <div class="row">
+      <div class="cell" id="cell-6"></div>
+      <div class="cell" id="cell-7"></div>
+      <div class="cell" id="cell-8"></div>
+    </div>
+  </div>
+  <button id="reset-button">Reset</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+CSS (in style.css file):
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+.game-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#reset-button {
+  margin-top: 20px;
+}
+
+JavaScript (in script.js file):
+
+let currentPlayer = 'X';
+let gameBoard = ['', '', '', '', '', '', '', '', ''];
+let gameOver = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const cells = document.querySelectorAll('.cell');
+  const resetButton = document.getElementById('reset-button');
+
+  cells.forEach((cell, index) => {
+    cell.addEventListener('click', () => {
+      if (gameOver) return;
+      if (gameBoard[index] !== '') return;
+
+      gameBoard[index] = currentPlayer;
+      cell.innerHTML = currentPlayer;
+
+      checkWinner();
+
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    });
+  });
+
+  resetButton.addEventListener('click', () => {
+    gameOver = false;
+    currentPlayer = 'X';
+    gameBoard = ['', '', '', '', '', '', '', '', ''];
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach((cell) => {
+      cell.innerHTML = '';
+    });
+  });
+});
+
+function checkWinner() {
+  const winningCombinations = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  for (let i = 0; i < winningCombinations.length; i++) {
+    const [a, b, c] = winningCombinations[i];
+    if (gameBoard[a] === gameBoard[b] && gameBoard[b] === gameBoard[c] && gameBoard[a] !== '') {
+      gameOver = true;
+      alert(`Player ${gameBoard[a]} wins!`);
+      return;
+    }
+  }
+
+  if (!gameBoard.includes('')) {
+    gameOver = true;
+    alert('It\'s a tie!');
+  }
+}
+
